@@ -83,12 +83,13 @@ def euclid_distance(obj1, obj2):
 
 
 def kmeans(k, centroids, data, categorical_values):
-    difference_threshold = 0.001
+    difference_threshold = 0
     l = k
+    counter = 0
     while l != 0:
         clusters = []
         for i, centroid in enumerate(centroids):
-            clusters.insert(i, [centroid])
+            clusters.insert(i, [])
 
         for obj in data:
             min_distance = 999999999
@@ -99,6 +100,7 @@ def kmeans(k, centroids, data, categorical_values):
                     min_distance = d
                     cIndex = i
             clusters[cIndex].append(obj)
+
         l = k
         for i, cluster in enumerate(clusters):
             new_centroid = get_mean(cluster, categorical_values)
@@ -106,7 +108,8 @@ def kmeans(k, centroids, data, categorical_values):
                 centroids[i] = new_centroid
             else:
                 l -= 1
-    print("a")
+        counter += 1
+    print("Finished in: " + str(counter) + " iterations.")
 
 
 def diff(obj1, obj2):
@@ -116,12 +119,13 @@ def diff(obj1, obj2):
     return total
 
 
-data = load_data("iris.csv")
+data = load_data("diamonds_reduced_numeric.csv")
 (data, categorical_values, mean) = preprocess(data[1:], 0)
 k = 3
 # seed(10)
 initial_centroids = []
-random_override = [135, 72, 111]  # override to match weka kmeans with seed = 1
+# override to match weka kmeans with seed = 1
+random_override = [620, 4532, 388]
 for i in range(k):
         # randIndex = randint(0, len(data))
     randIndex = random_override[i]
