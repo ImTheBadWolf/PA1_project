@@ -88,7 +88,7 @@ def kmeans(k, centroids, data, categorical_values):
     counter = 0
     while l != 0:
         clusters = []
-        for i, centroid in enumerate(centroids):
+        for i in range(len(centroids)):
             clusters.insert(i, [])
 
         for obj in data:
@@ -119,13 +119,13 @@ def diff(obj1, obj2):
     return total
 
 
-data = load_data("diamonds_reduced_numeric.csv")
-(data, categorical_values, mean) = preprocess(data[1:], 0)
+data = load_data("iris_numeric.csv")
+(data, categorical_values, mean) = preprocess(data[1:], 1)
 k = 3
 # seed(10)
 initial_centroids = []
 # override to match weka kmeans with seed = 1
-random_override = [620, 4532, 388]
+random_override = [135, 72, 111]
 for i in range(k):
         # randIndex = randint(0, len(data))
     randIndex = random_override[i]

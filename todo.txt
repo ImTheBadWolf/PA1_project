@@ -9,3 +9,5 @@ GUI -> vyber dat, vyber seedu ??, vyber poctu zhlukov k, vyber ci sa maju prazdn
   4.X. euclidova vzdialenost kazdeho bodu od centroidu zhluku, tam kde je najblizsie tam ho zarad
   4.X. prepocitaj centroid a opakuj
   5. SSE ?
+  
+Ignorovat stringovy atributy
