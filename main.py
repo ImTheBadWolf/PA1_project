@@ -18,30 +18,30 @@ def load_data(filename):
 def preprocess(data, method):
     # method 0 - delete instances with missing data
     # method 1 - replace missing values with avg
-    categorical_values = {}
-    for rowI, row in enumerate(data):
-        for valI, value in enumerate(row):
+    new_data = []
+    deleted_indices = []
+    for row in data:
+        new_row = []
+        for vI, value in enumerate(row):
             try:
-                data[rowI][valI] = float(value)
+                new_row.append(float(value))
             except:
-                if len(value) > 0:
-                    if valI in categorical_values:
-                        if value not in categorical_values[valI]:
-                            categorical_values[valI] += [value]
-                    else:
-                        categorical_values[valI] = [value]
-                    category_index = categorical_values[valI].index(value)
-                    data[rowI][valI] = category_index
-    return resolve_empty_vals(data, method, categorical_values)
+                if len(value) == 0:
+                    new_row.append("")
+                else:
+                    if vI not in deleted_indices:
+                        deleted_indices.append(vI)
+        new_data.append(new_row)
+    return resolve_empty_vals(new_data, method, deleted_indices)
 
 
-def resolve_empty_vals(data, method, categorical_values):
-    mean = get_mean(data, categorical_values)
+def resolve_empty_vals(data, method, deleted_indices):
+    mean = get_mean(data)
     recalculate_mean = False
     objects_to_remove = []
     for rowI, row in enumerate(data):
         for valI, value in enumerate(row):
-            if type(value) == str and len(value) <= 0:
+            if type(value) == str:
                 if method == 0 and row not in objects_to_remove:
                     objects_to_remove.append(row)
                 elif method == 1:
@@ -51,11 +51,11 @@ def resolve_empty_vals(data, method, categorical_values):
     for obj in objects_to_remove:
         data.remove(obj)
     if recalculate_mean:
-        mean = get_mean(data, categorical_values)
-    return (data, categorical_values, mean)
+        mean = get_mean(data)
+    return (data, mean, deleted_indices)
 
 
-def get_mean(data, categorical_values):
+def get_mean(data):
     mean = {}
     res = []
     skip_counter = 0
@@ -67,11 +67,8 @@ def get_mean(data, categorical_values):
             mean[valI] = float(row[valI]) + (mean.get(valI)
                                              if mean.get(valI) != None else 0)
     mean = mean.values()
-    for attI, m in enumerate(mean):
-        if attI not in categorical_values.keys():
-            res.append(m / (len(data)-skip_counter))
-        else:
-            res.append(round(m / (len(data)-skip_counter)))
+    for m in mean:
+        res.append(m / (len(data)-skip_counter))
     return res
 
 
@@ -82,7 +79,7 @@ def euclid_distance(obj1, obj2):
     return math.sqrt(total)
 
 
-def kmeans(k, centroids, data, categorical_values):
+def kmeans(k, centroids, data):
     difference_threshold = 0
     l = k
     counter = 0
@@ -103,13 +100,14 @@ def kmeans(k, centroids, data, categorical_values):
 
         l = k
         for i, cluster in enumerate(clusters):
-            new_centroid = get_mean(cluster, categorical_values)
+            new_centroid = get_mean(cluster)
             if diff(new_centroid, centroids[i]) > difference_threshold:
                 centroids[i] = new_centroid
             else:
                 l -= 1
         counter += 1
-    print("Finished in: " + str(counter) + " iterations.")
+    sse = "TODO"
+    return(counter, sse, centroids, clusters)
 
 
 def diff(obj1, obj2):
@@ -119,19 +117,78 @@ def diff(obj1, obj2):
     return total
 
 
-data = load_data("iris_numeric.csv")
-(data, categorical_values, mean) = preprocess(data[1:], 1)
+def show_result(kmeans_result, initial_centroids, original_data, deleted_indices, data_path, method, mean):
+    (counter, sse, centroids, clusters) = kmeans_result
+    result_template = """
+Clustering result for {0}: \nInstances: {1}, attributes: {2}.
+=============
+kMeans:
+Iterations: {3}
+SSE: {4}
+Initial starting centroids:
+{5}
+Missing values were {6}.
+
+Cluster centroids/mean:
+{7}
+"""
+    result = result_template.format(data_path,
+                                    len(original_data) -
+                                    1, len(original_data[0]) -
+                                    len(deleted_indices),
+                                    counter, sse,
+                                    print_centroids(
+                                        initial_centroids), "deleted" if method == 1 else "replaced by mean",
+                                    print_clusters(centroids, clusters, mean, deleted_indices,
+                                                   original_data[0], len(original_data)-1)
+                                    )
+
+    print(result)
+
+
+def print_centroids(centroids):
+    result = ""
+    for i, centroid in enumerate(centroids):
+        result += "Cluster " + str(i) + ":" + str(centroid) + "\n"
+    return result
+
+
+def print_clusters(centroids, clusters, mean, deleted_indices, header, data_len):
+    header = [att for idx, att in enumerate(
+        header) if idx not in deleted_indices]
+    table_header = "Attribute \tFull data ("+str(data_len)+")"
+    result = ""
+    for i in range(len(centroids)):
+        table_header += "\t\tC" + \
+            str(i) + " (" + str(len(clusters[i])) + ")"
+    for i, attribute in enumerate(header):
+        result += str(attribute) + "\t"+str(round(mean[i], 2)) + "\t"
+        for centroid in centroids:
+            result += "\t\t" + str(round(centroid[i], 2))
+        result += "\n"
+
+    result = table_header + "\n" +\
+        str("".join(
+            ["=" for i in range(len(table_header) + len(centroids)*8+8)])) + "\n" + result
+    return result
+
+
+data_path = "data.csv"
+method = 1
+data = load_data(data_path)
+original_data = data.copy()
+(data, mean, deleted_indices) = preprocess(data[1:], method)
+
+
 k = 3
 # seed(10)
 initial_centroids = []
 # override to match weka kmeans with seed = 1
-random_override = [135, 72, 111]
+random_override = [0, 4, 1]
 for i in range(k):
         # randIndex = randint(0, len(data))
     randIndex = random_override[i]
-
     initial_centroids.append(data[randIndex])
-    print("Initial cluster " + str(i) + ": ")
-    print(*data[randIndex], sep=", ")
-    print("=========================================")
-kmeans(k, initial_centroids, data, categorical_values)
+kmeans_result = kmeans(k, initial_centroids.copy(), data)
+show_result(kmeans_result, initial_centroids,
+            original_data, deleted_indices, data_path, method, mean)

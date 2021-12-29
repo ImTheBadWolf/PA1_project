@@ -5,9 +5,15 @@ GUI -> vyber dat, vyber seedu ??, vyber poctu zhlukov k, vyber ci sa maju prazdn
 ✔  3. preprocessing
 ✔     - prerobit kategorie na cisla
 ✔     - doplnit prazdne data -> zistit AVG hodnotu kazdeho atributu -> mean
-  4. kmeans zhlukovanie
-  4.X. euclidova vzdialenost kazdeho bodu od centroidu zhluku, tam kde je najblizsie tam ho zarad
-  4.X. prepocitaj centroid a opakuj
+✔  4. kmeans zhlukovanie
+✔  4.X. euclidova vzdialenost kazdeho bodu od centroidu zhluku, tam kde je najblizsie tam ho zarad
+✔  4.X. prepocitaj centroid a opakuj
   5. SSE ?
-  
-Ignorovat stringovy atributy
+
+  Výsledkem aplikace algoritmu bude textový soubor, ve kterém budou shrnuty
+informace o vstupech a výstupech algoritmu.
+ - informací o rozsahu datové sady
+ - vlastnostech atributů
+ -  výsledcích, naměřených přesnostech – rozptyl,
+ - směrodatná odchylka
+ - kvalita shlukování apod.
