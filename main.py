@@ -159,8 +159,9 @@ def print_clusters(centroids, clusters, mean, deleted_indices, header, data_len)
     table_header = "Attribute \tFull data ("+str(data_len)+")"
     result = ""
     for i in range(len(centroids)):
-        table_header += "\t\tC" + \
-            str(i) + " (" + str(len(clusters[i])) + ")"
+        table_header += "\tC" + \
+            str(i) + " (" + str(len(clusters[i])) + ", " + \
+            str(round(len(clusters[i])/data_len*100, 1)) + "%)"
     for i, attribute in enumerate(header):
         result += str(attribute) + "\t"+str(round(mean[i], 2)) + "\t"
         for centroid in centroids:
@@ -173,7 +174,7 @@ def print_clusters(centroids, clusters, mean, deleted_indices, header, data_len)
     return result
 
 
-data_path = "data.csv"
+data_path = "iris_numeric.csv"
 method = 1
 data = load_data(data_path)
 original_data = data.copy()
@@ -184,7 +185,7 @@ k = 3
 # seed(10)
 initial_centroids = []
 # override to match weka kmeans with seed = 1
-random_override = [0, 4, 1]
+random_override = [135, 72, 111]
 for i in range(k):
         # randIndex = randint(0, len(data))
     randIndex = random_override[i]
