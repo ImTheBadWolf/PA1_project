@@ -106,8 +106,16 @@ def kmeans(k, centroids, data):
             else:
                 l -= 1
         counter += 1
-    sse = "TODO"
+    sse = get_sse(centroids, clusters)
     return(counter, sse, centroids, clusters)
+
+
+def get_sse(centroids, clusters):
+    sse = 0
+    for i, centroid in enumerate(centroids):
+        for obj in clusters[i]:
+            sse += pow(euclid_distance(obj, centroid), 2)
+    return sse
 
 
 def diff(obj1, obj2):
