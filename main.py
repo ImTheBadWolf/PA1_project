@@ -103,59 +103,51 @@ def diff(obj1, obj2):
     return total
 
 
-def return_result(kmeans_result, initial_centroids, original_data, deleted_indices, data_path, method, mean, length):
-    (counter, sse, centroids, clusters) = kmeans_result
+def return_result(counter, initial_centroids, original_data, data_path, mean, points, clusters):
     result_template = """
 Clustering result for {0}: \nInstances: {1}, attributes: {2}.
 =============
 kMeans:
 Iterations: {3}
-SSE: {4}
 Initial starting centroids:
-{5}
-Missing values were {6}.
+{4}
 
 Cluster centroids/mean:
-{7}
+{5}
 """
     result = result_template.format(data_path,
-                                    length, len(original_data[0]) -
-                                    len(deleted_indices),
-                                    counter, sse,
-                                    print_centroids(
-                                        initial_centroids), "deleted" if method == 0 else "replaced by mean",
-                                    print_clusters(centroids, clusters, mean, deleted_indices,
-                                                   original_data[0], len(original_data)-1)
-                                    )
+                                    len(points), len(points[0].data),
+                                    counter,
+                                    print_centroids(initial_centroids),
+                                    print_clusters(clusters, mean, original_data[0], len(points)))
 
     return result
 
 
-def print_centroids(centroids):
+def print_centroids(initial_centroids):
     result = ""
-    for i, centroid in enumerate(centroids):
-        result += "Cluster " + str(i) + ":" + str(centroid) + "\n"
+    for i, centroid in enumerate(initial_centroids):
+        result += "Cluster " + str(i) + ":" + str(centroid.data) + "\n"
     return result
 
 
-def print_clusters(centroids, clusters, mean, deleted_indices, header, data_len):
-    header = [att for idx, att in enumerate(
-        header) if idx not in deleted_indices]
+def print_clusters(clusters, mean, header, data_len):
     table_header = "Attribute \tFull data ("+str(data_len)+")"
     result = ""
-    for i in range(len(centroids)):
+    for i, cluster in enumerate(clusters):
         table_header += "\tC" + \
-            str(i) + " (" + str(len(clusters[i])) + ", " + \
-            str(round(len(clusters[i])/data_len*100, 1)) + "%)"
+            str(i) + " (" + str(len(cluster.points)) + ", " + \
+            str(round(len(cluster.points)/data_len*100, 1)) + "%)"
     for i, attribute in enumerate(header):
-        result += str(attribute) + "\t"+str(round(mean[i], 2)) + "\t"
-        for centroid in centroids:
-            result += "\t\t" + str(round(centroid[i], 2))
+        result += str(attribute) + ("\t\t" if len(attribute) <
+                                    9 else "\t") + str(round(mean.data[i], 2)) + "\t"
+        for cluster in clusters:
+            result += "\t\t" + str(round(cluster.centroid.data[i], 2))
         result += "\n"
 
     result = table_header + "\n" +\
         str("".join(
-            ["=" for i in range(len(table_header) + len(centroids)*8+8)])) + "\n" + result
+            ["=" for i in range(60)])) + "\n" + result
     return result
 
 
@@ -165,18 +157,20 @@ def start(path, k):
     original_data = data.copy()
     points = preprocess(data[1:])
 
-    initial_clusters = []
-    # override to match weka kmeans with seed = 1, diamonds_reduced_numeric.csv
-    random_override = [0, 8, 14]
+    clusters = []
+    initial_centroids = []
+    random_override = [620, 1552, 1115]
     for i in range(k):
         #randIndex = randint(0, len(points))
         randIndex = random_override[i]
 
         tmp_cluster = Cluster(points[randIndex])
-        initial_clusters.append(tmp_cluster)
-    kmeans_result = kmeans(k, initial_clusters.copy(), points)
-    """ return return_result(kmeans_result, initial_centroids,
-                         original_data, deleted_indices, path, method, mean, len(data)) """
+        initial_centroids.append(points[randIndex])
+        clusters.append(tmp_cluster)
+    kmeans_result = kmeans(k, clusters, points)
+    mean = get_mean(points)
+    return return_result(kmeans_result, initial_centroids,
+                         original_data, path, mean, points, clusters)
 
 
-start("test_data.csv", 3)
+print(start("diamonds_numeric.csv", 3))
