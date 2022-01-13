@@ -1,4 +1,7 @@
+import time
+from numpy import array_split
 import math
+import threading
 from mimetypes import init
 from random import randint
 from random import seed
@@ -72,28 +75,16 @@ def euclid_distance(obj1, obj2):
     return math.sqrt(total)
 
 
-def kmeans(k, clusters: List[Cluster], points: List[Point]):
-    l = k
-    counter = 0
-    while l != 0:
+def kmeans(clusters: List[Cluster], points: List[Point]):
+    for point in points:
+        min_distance = float('inf')
+        point_cluster = None
         for cluster in clusters:
-            cluster.clear_points()
-        for point in points:  # data rozdelit na N casti => n threadov, centroids a clusters zdielat medzithreadovo
-            min_distance = float('inf')
-            point_cluster = None
-            for cluster in clusters:
-                d = euclid_distance(point.data, cluster.centroid.data)
-                if d < min_distance:
-                    min_distance = d
-                    point_cluster = cluster
-            point_cluster.points.append(point)
-
-        l = k
-        for cluster in clusters:
-            l -= cluster.recalculate_centroid()
-        counter += 1
-
-    return counter
+            d = euclid_distance(point.data, cluster.centroid.data)
+            if d < min_distance:
+                min_distance = d
+                point_cluster = cluster
+        point_cluster.points.append(point)
 
 
 def diff(obj1, obj2):
@@ -103,21 +94,19 @@ def diff(obj1, obj2):
     return total
 
 
-def return_result(counter, initial_centroids, original_data, data_path, mean, points, clusters):
+def return_result(initial_centroids, original_data, data_path, mean, points, clusters):
     result_template = """
 Clustering result for {0}: \nInstances: {1}, attributes: {2}.
 =============
 kMeans:
-Iterations: {3}
 Initial starting centroids:
-{4}
+{3}
 
 Cluster centroids/mean:
-{5}
+{4}
 """
     result = result_template.format(data_path,
                                     len(points), len(points[0].data),
-                                    counter,
                                     print_centroids(initial_centroids),
                                     print_clusters(clusters, mean, original_data[0], len(points)))
 
@@ -151,7 +140,8 @@ def print_clusters(clusters, mean, header, data_len):
     return result
 
 
-def start(path, k):
+def start(path, k, thread_num):
+    start = time.time()
     k = int(k)
     data = load_data(path)
     original_data = data.copy()
@@ -159,7 +149,7 @@ def start(path, k):
 
     clusters = []
     initial_centroids = []
-    random_override = [620, 1552, 1115]
+    random_override = [620, 1552, 1115]  # [98985, 66026, 3589]  #
     for i in range(k):
         #randIndex = randint(0, len(points))
         randIndex = random_override[i]
@@ -167,10 +157,39 @@ def start(path, k):
         tmp_cluster = Cluster(points[randIndex])
         initial_centroids.append(points[randIndex])
         clusters.append(tmp_cluster)
-    kmeans_result = kmeans(k, clusters, points)
     mean = get_mean(points)
-    return return_result(kmeans_result, initial_centroids,
+
+    threads = []
+    l = 0
+    iteration_times = []
+    split_points = array_split(points, thread_num)
+    while l != k:  # TODO dowhile
+        startS = time.time()
+        for cluster in clusters:
+            cluster.clear_points()
+        for split_points_part in split_points:
+            tmp_thread = threading.Thread(
+                target=kmeans(clusters, split_points_part))
+            threads.append(tmp_thread)
+            tmp_thread.start()
+        for thread in threads:
+            thread.join()
+        l = 0
+        for cluster in clusters:
+            l += cluster.recalculate_centroid()
+        endS = time.time()
+        iteration_times.append(endS-startS)
+
+    end = time.time()
+    print("Elapsed time: " + str(end-start))
+    print("Average iteration time: " +
+          str(sum(iteration_times)/len(iteration_times)))
+    print("Number of iterations: " + str(len(iteration_times)))
+
+    return return_result(initial_centroids,
                          original_data, path, mean, points, clusters)
 
 
-print(start("diamonds_numeric.csv", 3))
+thread_count = 4
+print("Kmeans on " + str(thread_count) + " threads")
+print(start("diamonds_numeric.csv", 3, thread_count))
