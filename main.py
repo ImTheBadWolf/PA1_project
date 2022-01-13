@@ -1,6 +1,32 @@
 import math
+from mimetypes import init
 from random import randint
 from random import seed
+from typing import List
+
+
+class Point:
+    def __init__(self, *args):
+        self.data = []
+        for arg in args:
+            self.data = arg
+
+
+class Cluster:
+    def __init__(self, centroid: Point):
+        self.centroid = centroid
+        self.points = []
+
+    def recalculate_centroid(self):
+        new_centroid = get_mean(self.points)
+        if diff(new_centroid.data, self.centroid.data) > 0:
+            self.centroid = new_centroid
+            return 0
+        else:
+            return 1
+
+    def clear_points(self):
+        self.points = []
 
 
 def load_data(filename):
@@ -15,61 +41,28 @@ def load_data(filename):
     return rows
 
 
-def preprocess(data, method):
-    # method 0 - delete instances with missing data
-    # method 1 - replace missing values with avg
-    new_data = []
-    deleted_indices = []
+def preprocess(data):
+    points = []
     for row in data:
-        new_row = []
-        for vI, value in enumerate(row):
-            try:
-                new_row.append(float(value))
-            except:
-                if len(value) == 0:
-                    new_row.append("")
-                else:
-                    if vI not in deleted_indices:
-                        deleted_indices.append(vI)
-        new_data.append(new_row)
-    return resolve_empty_vals(new_data, method, deleted_indices)
+        tmp_row = []
+        for d in row:
+            tmp_row.append(float(d))
+        tmp_point = Point(tmp_row)
+        points.append(tmp_point)
+    return points
 
 
-def resolve_empty_vals(data, method, deleted_indices):
-    mean = get_mean(data)
-    recalculate_mean = False
-    objects_to_remove = []
-    for rowI, row in enumerate(data):
-        for valI, value in enumerate(row):
-            if type(value) == str:
-                if method == 0 and row not in objects_to_remove:
-                    objects_to_remove.append(row)
-                elif method == 1:
-                    data[rowI][valI] = mean[valI]
-                    recalculate_mean = True
-                    pass
-    for obj in objects_to_remove:
-        data.remove(obj)
-    if recalculate_mean:
-        mean = get_mean(data)
-    return (data, mean, deleted_indices)
-
-
-def get_mean(data):
+def get_mean(points: List[Point]):
     mean = {}
     res = []
-    skip_counter = 0
-    for row in data:
-        for valI, value in enumerate(row):
-            if type(value) == str:
-                skip_counter += 1
-                break
-            mean[valI] = float(row[valI]) + (mean.get(valI)
-                                             if mean.get(valI) != None else 0)
+    for point in points:
+        for valI, value in enumerate(point.data):
+            mean[valI] = value + \
+                (mean.get(valI) if mean.get(valI) != None else 0)
     mean = mean.values()
     for m in mean:
-        res.append(m / (len(data)-skip_counter))
-    return res
+        res.append(m / len(points))
+    return Point(res)
 
 
 def euclid_distance(obj1, obj2):
@@ -79,43 +72,28 @@ def euclid_distance(obj1, obj2):
     return math.sqrt(total)
 
 
-def kmeans(k, centroids, data):
-    difference_threshold = 0
+def kmeans(k, clusters: List[Cluster], points: List[Point]):
     l = k
     counter = 0
     while l != 0:
-        clusters = []
-        for i in range(len(centroids)):
-            clusters.insert(i, [])
-
-        for obj in data:
-            min_distance = 999999999
-            cIndex = []
-            for i in range(k):
-                d = euclid_distance(obj, centroids[i])
+        for cluster in clusters:
+            cluster.clear_points()
+        for point in points:  # data rozdelit na N casti => n threadov, centroids a clusters zdielat medzithreadovo
+            min_distance = float('inf')
+            point_cluster = None
+            for cluster in clusters:
+                d = euclid_distance(point.data, cluster.centroid.data)
                 if d < min_distance:
                     min_distance = d
-                    cIndex = i
-            clusters[cIndex].append(obj)
+                    point_cluster = cluster
+            point_cluster.points.append(point)
 
         l = k
-        for i, cluster in enumerate(clusters):
-            new_centroid = get_mean(cluster)
-            if diff(new_centroid, centroids[i]) > difference_threshold:
-                centroids[i] = new_centroid
-            else:
-                l -= 1
+        for cluster in clusters:
+            l -= cluster.recalculate_centroid()
         counter += 1
-    sse = get_sse(centroids, clusters)
-    return(counter, sse, centroids, clusters)
 
-
-def get_sse(centroids, clusters):
-    sse = 0
-    for i, centroid in enumerate(centroids):
-        for obj in clusters[i]:
-            sse += pow(euclid_distance(obj, centroid), 2)
-    return sse
+    return counter
 
 
 def diff(obj1, obj2):
@@ -125,7 +103,7 @@ def diff(obj1, obj2):
     return total
 
 
-def show_result(kmeans_result, initial_centroids, original_data, deleted_indices, data_path, method, mean):
+def return_result(kmeans_result, initial_centroids, original_data, deleted_indices, data_path, method, mean, length):
     (counter, sse, centroids, clusters) = kmeans_result
     result_template = """
 Clustering result for {0}: \nInstances: {1}, attributes: {2}.
@@ -141,17 +119,16 @@ Cluster centroids/mean:
 {7}
 """
     result = result_template.format(data_path,
-                                    len(original_data) -
-                                    1, len(original_data[0]) -
+                                    length, len(original_data[0]) -
                                     len(deleted_indices),
                                     counter, sse,
                                     print_centroids(
-                                        initial_centroids), "deleted" if method == 1 else "replaced by mean",
+                                        initial_centroids), "deleted" if method == 0 else "replaced by mean",
                                     print_clusters(centroids, clusters, mean, deleted_indices,
                                                    original_data[0], len(original_data)-1)
                                     )
 
-    print(result)
+    return result
 
 
 def print_centroids(centroids):
@@ -182,22 +159,24 @@ def print_clusters(centroids, clusters, mean, deleted_indices, header, data_len)
     return result
 
 
-data_path = "iris_numeric.csv"
-method = 1
-data = load_data(data_path)
-original_data = data.copy()
-(data, mean, deleted_indices) = preprocess(data[1:], method)
+def start(path, k):
+    k = int(k)
+    data = load_data(path)
+    original_data = data.copy()
+    points = preprocess(data[1:])
+
+    initial_clusters = []
+    # override to match weka kmeans with seed = 1, diamonds_reduced_numeric.csv
+    random_override = [0, 8, 14]
+    for i in range(k):
+        #randIndex = randint(0, len(points))
+        randIndex = random_override[i]
+
+        tmp_cluster = Cluster(points[randIndex])
+        initial_clusters.append(tmp_cluster)
+    kmeans_result = kmeans(k, initial_clusters.copy(), points)
+    """ return return_result(kmeans_result, initial_centroids,
+                         original_data, deleted_indices, path, method, mean, len(data)) """
 
 
-k = 3
-# seed(10)
-initial_centroids = []
-# override to match weka kmeans with seed = 1
-random_override = [135, 72, 111]
-for i in range(k):
-        # randIndex = randint(0, len(data))
-    randIndex = random_override[i]
-    initial_centroids.append(data[randIndex])
-kmeans_result = kmeans(k, initial_centroids.copy(), data)
-show_result(kmeans_result, initial_centroids,
-            original_data, deleted_indices, data_path, method, mean)
+start("test_data.csv", 3)
