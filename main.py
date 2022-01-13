@@ -181,6 +181,8 @@ def start(path, k, thread_num):
         iteration_times.append(endS-startS)
 
     end = time.time()
+    #print(str(round(end-start, 2)), end=", ")
+    # print(len(iteration_times))
     print("Elapsed time: " + str(end-start))
     print("Average iteration time: " +
           str(sum(iteration_times)/len(iteration_times)))
@@ -192,4 +194,13 @@ def start(path, k, thread_num):
 
 thread_count = 4
 print("Kmeans on " + str(thread_count) + " threads")
-print(start("diamonds_numeric.csv", 3, thread_count))
+print(start("diamonds_numeric.csv", 3, 4))
+
+""" print("Data length: 50k")
+print("Threads, time(s), iterations")
+for i in range(1, 20):
+    thread_count = i
+    print(i, end=", ")
+    #print("Kmeans on " + str(thread_count) + " threads")
+    start("generated.csv", 3, thread_count)
+ """

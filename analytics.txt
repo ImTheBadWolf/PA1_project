@@ -1,0 +1,52 @@
+Data length: 250k
+Threads, time(s), iterations
+1, 270.28, 62
+2, 272.4, 62
+3, 268.99, 62
+4, 270.02, 62
+
+Data length: 200k
+Threads, time(s), iterations
+1, 186.79, 54
+2, 185.67, 54
+3, 185.15, 54
+4, 183.37, 54
+
+Data length: 150k
+Threads, time(s), iterations
+1, 144.26, 55
+2, 145.36, 55
+3, 141.87, 55
+4, 144.25, 55
+
+Data length: 100k
+Threads, time(s), iterations
+1, 101.77, 57
+
+Data length: 50k
+Threads, time(s), iterations
+1, 52.13, 55
+
+Data length: 25k
+Threads, time(s), iterations
+1, 31.02, 69
+
+Data length: 10k
+Threads, time(s), iterations
+1, 11.23, 47
+
+Data length: 5k
+Threads, time(s), iterations
+1, 4.13, 35
+
+Data length: 2.5k
+Threads, time(s), iterations
+1, 1.0, 19
+
+
+Data length: 350k
+Threads, time(s), iterations
+1, 408.75, 67
+2, 399.01, 67
+3, 399.12, 67
+4, 405.34, 67
