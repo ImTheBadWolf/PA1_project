@@ -194,7 +194,7 @@ def start(path, k, thread_num):
 
 thread_count = 4
 print("Kmeans on " + str(thread_count) + " threads")
-print(start("diamonds_numeric.csv", 3, 4))
+print(start("MOCK_DATA.csv", 3, 4))
 
 """ print("Data length: 50k")
 print("Threads, time(s), iterations")
