@@ -1,0 +1,6 @@
+﻿  kmeans.cpp
+C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(36,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(58,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(62,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(68,21): warning C4018: '<': signed/unsigned mismatch
+  kmeans.vcxproj -> C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\Debug\kmeans.exe
