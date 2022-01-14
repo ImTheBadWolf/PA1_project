@@ -163,7 +163,7 @@ def start(path, k, thread_num):
     l = 0
     iteration_times = []
     split_points = array_split(points, thread_num)
-    while l != k:  # TODO dowhile
+    while l != k:
         startS = time.time()
         for cluster in clusters:
             cluster.clear_points()
@@ -194,7 +194,7 @@ def start(path, k, thread_num):
 
 thread_count = 4
 print("Kmeans on " + str(thread_count) + " threads")
-print(start("MOCK_DATA.csv", 3, 4))
+print(start("diamonds_numeric.csv", 3, 4))
 
 """ print("Data length: 50k")
 print("Threads, time(s), iterations")

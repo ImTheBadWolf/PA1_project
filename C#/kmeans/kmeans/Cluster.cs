@@ -9,6 +9,10 @@ namespace kmeans
         private Point centroid;
         private List<Point> points;
 
+        public Cluster()
+        {
+
+        }
         public Cluster(Point centroid)
         {
             this.centroid = centroid;
@@ -35,6 +39,16 @@ namespace kmeans
             }
 
             return 1;
+        }
+
+        public Point getCentroid()
+        {
+            return this.centroid;
+        }
+
+        public void appendPoint(Point point)
+        {
+            this.points.Add(point);
         }
 
         public Point getMean(List<Point> points)
