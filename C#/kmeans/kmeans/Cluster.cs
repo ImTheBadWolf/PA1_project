@@ -24,9 +24,9 @@ namespace kmeans
             this.points.Clear();
         }
 
-        public void setPointList(List<Point> points)
+        public List<Point> getPointList()
         {
-            this.points = points;
+            return this.points;
         }
 
         public int RecalculateCentroid()

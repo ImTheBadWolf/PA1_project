@@ -1,9 +1,9 @@
 import random
 
 n = 1500000
-m = 4
+m = 8
 
-f = open("generated.csv", "w")
+f = open("generated1_5m.csv", "w")
 for i in range(m):
     f.write("att" + str(i) + (", " if i != m-1 else "\n"))
 for i in range(n):

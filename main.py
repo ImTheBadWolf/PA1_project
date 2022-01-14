@@ -75,6 +75,14 @@ def euclid_distance(obj1, obj2):
     return math.sqrt(total)
 
 
+def get_sse(clusters):
+    sse = 0
+    for cluster in clusters:
+        for point in cluster.points:
+            sse += pow(euclid_distance(point.data, cluster.centroid.data), 2)
+    return sse
+
+
 def kmeans(clusters: List[Cluster], points: List[Point]):
     for point in points:
         min_distance = float('inf')
@@ -97,16 +105,18 @@ def diff(obj1, obj2):
 def return_result(initial_centroids, original_data, data_path, mean, points, clusters):
     result_template = """
 Clustering result for {0}: \nInstances: {1}, attributes: {2}.
+SSE: {3}
 =============
 kMeans:
 Initial starting centroids:
-{3}
+{4}
 
 Cluster centroids/mean:
-{4}
+{5}
 """
     result = result_template.format(data_path,
-                                    len(points), len(points[0].data),
+                                    len(points), len(
+                                        points[0].data), get_sse(clusters),
                                     print_centroids(initial_centroids),
                                     print_clusters(clusters, mean, original_data[0], len(points)))
 
@@ -151,8 +161,8 @@ def start(path, k, thread_num):
     initial_centroids = []
     random_override = [620, 1552, 1115]  # [98985, 66026, 3589]  #
     for i in range(k):
-        #randIndex = randint(0, len(points))
-        randIndex = random_override[i]
+        randIndex = randint(0, len(points))
+        #randIndex = random_override[i]
 
         tmp_cluster = Cluster(points[randIndex])
         initial_centroids.append(points[randIndex])
@@ -181,8 +191,6 @@ def start(path, k, thread_num):
         iteration_times.append(endS-startS)
 
     end = time.time()
-    #print(str(round(end-start, 2)), end=", ")
-    # print(len(iteration_times))
     print("Elapsed time: " + str(end-start))
     print("Average iteration time: " +
           str(sum(iteration_times)/len(iteration_times)))
@@ -194,13 +202,6 @@ def start(path, k, thread_num):
 
 thread_count = 4
 print("Kmeans on " + str(thread_count) + " threads")
-print(start("diamonds_numeric.csv", 3, 4))
-
-""" print("Data length: 50k")
-print("Threads, time(s), iterations")
-for i in range(1, 20):
-    thread_count = i
-    print(i, end=", ")
-    #print("Kmeans on " + str(thread_count) + " threads")
-    start("generated.csv", 3, thread_count)
- """
+k = 3
+thread_count = 4
+print(start("diamonds_numeric.csv", k, thread_count))
