@@ -65,7 +65,6 @@ threads, time(s)
 
 //////////////////////
 C#, generated1_5m, 1.5M dataset, 8D, k=3
-threads, time(s)
 1, 270.54
 2, 151.06
 3, 130.46
