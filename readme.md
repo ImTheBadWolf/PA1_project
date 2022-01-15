@@ -1,4 +1,4 @@
-# Kmeans parallel clustering using ~~3~~ 2 different programming languages
+# Kmeans parallel clustering using 3 different programming languages
 
 ## Changes in time needed for clustering based on number of threads used
 

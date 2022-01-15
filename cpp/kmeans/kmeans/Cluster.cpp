@@ -15,14 +15,10 @@ class Cluster {
 		for (int i = 0; i < len; i++) {
 			total += abs(p1Data[i] - p2Data[i]);
 		}
-		cout << "difference: " << total << endl;
 		return total;
 	}
 
 public:
-	Cluster() {
-
-	}
 	Cluster(Point* centroid) {
 		this->centroid = centroid;
 		this->points = vector<Point>();

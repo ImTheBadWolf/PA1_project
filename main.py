@@ -159,10 +159,10 @@ def start(path, k, thread_num):
 
     clusters = []
     initial_centroids = []
-    random_override = [2, 4, 6]  # [98985, 66026, 3589]  #
+    random_override = [620, 1552, 1115]  # [98985, 66026, 3589]  #
     for i in range(k):
-        #randIndex = randint(0, len(points))
-        randIndex = random_override[i]
+        randIndex = randint(0, len(points))
+        #randIndex = random_override[i]
 
         tmp_cluster = Cluster(points[randIndex])
         initial_centroids.append(points[randIndex])
@@ -203,4 +203,4 @@ def start(path, k, thread_num):
 thread_count = 1
 print("Kmeans on " + str(thread_count) + " threads")
 k = 3
-print(start("smol_data.csv", k, thread_count))
+print(start("diamonds_numeric.csv", k, thread_count))
