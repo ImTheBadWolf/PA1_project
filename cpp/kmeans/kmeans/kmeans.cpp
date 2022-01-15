@@ -83,7 +83,8 @@ void start(int k, int threadNum, string dataPath) {
 
 	for (int i = 0; i < k; i++)
 	{
-		int randomIndex = randomOverride[i];
+		//int randomIndex = randomOverride[i];
+		int randomIndex = rand() % points.size();
 		
 		clusters.emplace_back(Cluster(points.at(randomIndex)));
 		initialClusters.emplace_back(Cluster(points.at(randomIndex)));
@@ -127,11 +128,11 @@ void start(int k, int threadNum, string dataPath) {
 int main()
 {
 	const int k = 3;
-	//const int threadNum = 1;
-	const string dataPath = "../../../generated.csv";
-	for (int threadNum = 1; threadNum < 8; threadNum++) {
-		start(k, threadNum, dataPath);
-	}
+	const int threadNum = 4;
+	const string dataPath = "../../../diamonds_numeric.csv";
+	//for (int threadNum = 1; threadNum < 8; threadNum++)
+	start(k, threadNum, dataPath);
+	
 	
 	
 }
