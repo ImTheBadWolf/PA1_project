@@ -85,7 +85,7 @@ void start(int k, int threadNum, string dataPath) {
 		clusters.emplace_back(Cluster(&points.at(randomIndex)));
 		initialClusters.emplace_back(Cluster(&points.at(randomIndex)));
 	}
-	Point* mean = clusters.at(0).GetMean(points);
+	Point* mean = clusters.at(0).GetMean(points, dimensions);
 
 	int pointsPerThread = points.size() / threadNum;
 	//List<double> iterationTimes = new List<double>();
@@ -110,8 +110,8 @@ void start(int k, int threadNum, string dataPath) {
 		l = 0;
 		for (int j = 0; j < clusters.size(); j++)
 			l += clusters.at(j).RecalculateCentroid();
-		cout << "iteracia" << endl;
-		
+		cout << "iteracia";
+		cout << endl;
 	}
 
 

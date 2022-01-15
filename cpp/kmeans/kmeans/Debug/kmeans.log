@@ -1,17 +1,10 @@
 ﻿  Cluster.cpp
-C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(53,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(57,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(59,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(63,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(59,21): warning C4018: '<': signed/unsigned mismatch
   kmeans.cpp
-C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(53,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(57,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(59,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(63,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(59,21): warning C4018: '<': signed/unsigned mismatch
 C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\kmeans.cpp(53,16): warning C4018: '<': signed/unsigned mismatch
 C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\kmeans.cpp(57,17): warning C4018: '<': signed/unsigned mismatch
 C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\kmeans.cpp(96,21): warning C4018: '<': signed/unsigned mismatch
 C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\kmeans.cpp(111,21): warning C4018: '<': signed/unsigned mismatch
-  Point.cpp
   Generating Code...
   kmeans.vcxproj -> C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\Debug\kmeans.exe
