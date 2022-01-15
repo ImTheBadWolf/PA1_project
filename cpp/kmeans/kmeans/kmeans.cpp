@@ -17,7 +17,7 @@ int randomOverride[] = { 1, 5, 15 };//{ 620, 1552, 1115 };
 int LoadData(string dataPath, vector<Point>* points) {
 	string line, word, header;
 	fstream file(dataPath, ios::in);
-	int dimensions;
+	int dimensions = 0;
 	if (file.is_open())
 	{
 		getline(file, header);
@@ -37,6 +37,9 @@ int LoadData(string dataPath, vector<Point>* points) {
 			dimensions = i;
 			points->emplace_back(Point(values));
 		}
+	}
+	else {
+		cout << "File not found" << endl;
 	}
 	return dimensions;
 }
@@ -129,6 +132,6 @@ int main()
 {
 	const int k = 3;
 	const int threadNum = 2;
-	const string dataPath = "../../../diamond_numeric.csv";
+	const string dataPath = "../../../diamonds_numeric.csv";
 	start(k, threadNum, dataPath);
 }
