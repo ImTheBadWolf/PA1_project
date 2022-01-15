@@ -13,7 +13,7 @@ class Cluster {
 		float* p1Data = p1->GetData();
 		float* p2Data = p2->GetData();
 		for (int i = 0; i < sizeof(p1Data); i++) {
-			total += abs(p1Data[i] - p2Data[i]);
+			total += abs(&p1Data[i] - &p2Data[i]);
 		}
 		return total;
 	}
@@ -27,15 +27,11 @@ public:
 		this->points = vector<Point>();
 	}
 
-	void AppendPoint(float* data) {
-		Point newPoint = Point(data);
-		points.emplace_back(newPoint);
+	void AppendPoint(Point point) {
+		points.emplace_back(point);
 	}
 
 	void ClearPoints() {
-		for (int i = 0; i < this->points.size(); i++) {
-			delete &this->points.at(i);
-		}
 		this->points.clear();
 	}
 
@@ -46,7 +42,6 @@ public:
 	int RecalculateCentroid() {
 		Point* newCentroid = GetMean(this->points);
 		if (Diff(newCentroid, this->centroid) > 0) {
-			delete this->centroid;
 			this->centroid = newCentroid;
 			return 0;
 		}
@@ -61,7 +56,7 @@ public:
 
 		for (int i = 0; i < points.size(); i++) {
 			float* pointData = points.at(i).GetData();
-			for (int j = 0; j < sizeof(pointData); j++) {
+			for (int j = 0; j < size(mean); j++) {
 				mean[j] = mean[j] + pointData[j];
 			}
 		}

@@ -72,7 +72,7 @@ namespace kmeans
             sw.Stop();
             Console.WriteLine("Kmeans on {0} threads\nElapsed time: {1}s\nAverage iteration time: {2}s\nNumber of iterations: {3}", threadNum, sw.Elapsed.TotalSeconds, iterationTimes.Sum()/iterationTimes.Count, iterationTimes.Count );
             Console.WriteLine(Result(dataPath, points.Count, header, initialClusters, clusters, mean));
-            //Console.ReadKey();
+            Console.ReadKey();
         }
 
         private String Result(String dataPath, int dataLength, String header, List<Cluster> initialClusters, List<Cluster> clusters, Point mean)
