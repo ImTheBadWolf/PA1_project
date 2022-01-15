@@ -1,9 +1,9 @@
 ﻿  kmeans.cpp
-C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(60,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\kmeans.cpp(59,16): warning C4018: '<': signed/unsigned mismatch
-C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\kmeans.cpp(64,17): warning C4018: '<': signed/unsigned mismatch
-C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\kmeans.cpp(105,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\kmeans.cpp(118,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\Cluster.cpp(64,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\kmeans.cpp(57,16): warning C4018: '<': signed/unsigned mismatch
+C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\kmeans.cpp(61,17): warning C4018: '<': signed/unsigned mismatch
+C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\kmeans.cpp(100,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\kmeans.cpp(114,21): warning C4018: '<': signed/unsigned mismatch
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\numeric(35,26): warning C4244: '=': conversion from '__int64' to '_Ty', possible loss of data
           with
           [
@@ -16,7 +16,7 @@ C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.2
               _InIt=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<__int64>>>,
               _Fn=std::plus<void>
           ]
-C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\kmeans.cpp(128): message : see reference to function template instantiation '_Ty std::accumulate<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<__int64>>>,int>(const _InIt,const _InIt,_Ty)' being compiled
+C:\Users\matus\Documents\skola\vsb\1 sem ing\PA 1\semestralka\cpp\kmeans\kmeans\kmeans.cpp(124): message : see reference to function template instantiation '_Ty std::accumulate<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<__int64>>>,int>(const _InIt,const _InIt,_Ty)' being compiled
           with
           [
               _Ty=int,

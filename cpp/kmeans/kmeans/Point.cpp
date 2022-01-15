@@ -1,13 +1,21 @@
 
 using namespace std;
+#include<vector>
+
 class Point {
-	float* data;
+	vector<float> data;
 	
 public:
-	Point(float* data) {
+	Point() {
+
+	}
+	Point(vector<float> data) {
 		this->data = data;
 	}
-	float* GetData() {
+	Point(Point* point) {
+		int a = 5;
+	}
+	vector<float> GetData() {
 		return this->data;
 	}
 };

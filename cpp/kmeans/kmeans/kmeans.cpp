@@ -1,6 +1,4 @@
 #include <iostream>
-#include <vector>
-#include <mutex>
 #include "Cluster.cpp"
 #include <numeric>
 #include <string>
@@ -12,12 +10,12 @@
 using namespace std;
 
 
-int randomOverride[] = { 1, 5, 15 };//{ 620, 1552, 1115 };
+int randomOverride[] = { 620, 1552, 1115 };//{ 620, 1552, 1115 };
 
-int LoadData(string dataPath, vector<Point>* points) {
+vector<Point> LoadData(string dataPath) {
+	vector<Point> points;
 	string line, word, header;
 	fstream file(dataPath, ios::in);
-	int dimensions = 0;
 	if (file.is_open())
 	{
 		getline(file, header);
@@ -28,52 +26,49 @@ int LoadData(string dataPath, vector<Point>* points) {
 		while (getline(file, line))
 		{
 			int i = 0;
-			float* values = new float[counter];
+			vector<float> values;
+			values.reserve(counter);
 			stringstream str(line);
 			while (getline(str, word, ',')) {
-				values[i] = stof(word);
+				values.push_back(stof(word));
 				i++;
 			}
-			dimensions = i;
-			points->emplace_back(Point(values));
+			points.emplace_back(Point(values));
 		}
 	}
 	else {
 		cout << "File not found" << endl;
 	}
-	return dimensions;
+	return points;
 }
 
-double EuclidDistance(Point* p1, Point* p2, int dimensions) {
+double EuclidDistance(Point p1, Point p2, int dimension) {
 	double total = 0;
-	float* p1Data = p1->GetData();
-	float* p2Data = p2->GetData();
-	for (int i = 0; i < dimensions; i++)
+	vector<float> p1Data = p1.GetData();
+	vector<float> p2Data = p2.GetData();
+	for (int i = 0; i < dimension; i++)
 	{
 		total += pow(p1Data[i] - p2Data[i], 2);
 	}
 	return sqrt(total);
 }
 
-static void Kmeans(vector<Cluster>* clusters, vector<Point> points, int dimensions) {
+static void Kmeans(vector<Cluster>& clusters, vector<Point> points, int dimension) {
 	for(int i=0; i<points.size(); i++)
 	{
 		double minDistance = 999999999;
 		Cluster* pointCluster = new Cluster();
-		mutex pointCluster_mutex;
-		for(int j=0; j<clusters->size(); j++)
+		for(int j=0; j<clusters.size(); j++)
 		{
-			double distance = EuclidDistance(&points.at(i), clusters->at(j).GetCentroid(), dimensions);
+			double distance = EuclidDistance(points.at(i), clusters.at(j).GetCentroid(), dimension);
 			if (distance < minDistance)
 			{
 				minDistance = distance;
-				pointCluster = &clusters->at(j);
+				pointCluster = &clusters.at(j);
 			}
 		}
-		
-		pointCluster_mutex.lock();
 		pointCluster->AppendPoint(points.at(i));
-		pointCluster_mutex.unlock();
+		
 	}
 }
 
@@ -82,18 +77,18 @@ void start(int k, int threadNum, string dataPath) {
 	vector<long long> iterattionTimes;
     vector<Cluster> initialClusters;
     vector<Cluster> clusters;
-    vector<Point> points;
-
-    int dimensions = LoadData(dataPath, &points);
+	
+	vector<Point> points = LoadData(dataPath);
+	int dimension = points[0].GetData().size();
 
 	for (int i = 0; i < k; i++)
 	{
 		int randomIndex = randomOverride[i];
 		
-		clusters.emplace_back(Cluster(&points.at(randomIndex)));
-		initialClusters.emplace_back(Cluster(&points.at(randomIndex)));
+		clusters.emplace_back(Cluster(points.at(randomIndex)));
+		initialClusters.emplace_back(Cluster(points.at(randomIndex)));
 	}
-	Point* mean = clusters.at(0).GetMean(points, dimensions);
+	Point mean = clusters.at(0).GetMean(points, dimension);
 
 	int pointsPerThread = points.size() / threadNum;
 
@@ -109,7 +104,8 @@ void start(int k, int threadNum, string dataPath) {
 			int from = i * pointsPerThread;
 			int to = i != threadNum - 1 ? pointsPerThread : pointsPerThread + (points.size() - pointsPerThread * threadNum);
 			vector<Point> part(points.begin() + from, points.begin() + from + to);
-			threads.emplace_back(thread(Kmeans, &clusters, part, dimensions));
+			threads.emplace_back(thread(Kmeans, ref(clusters), part, dimension));
+			//Kmeans(&clusters, part, dimension);
 		}
 		for (int i = 0; i < threadNum; i++)
 			threads[i].join();
@@ -131,7 +127,11 @@ void start(int k, int threadNum, string dataPath) {
 int main()
 {
 	const int k = 3;
-	const int threadNum = 2;
-	const string dataPath = "../../../diamonds_numeric.csv";
-	start(k, threadNum, dataPath);
+	//const int threadNum = 1;
+	const string dataPath = "../../../generated.csv";
+	for (int threadNum = 1; threadNum < 8; threadNum++) {
+		start(k, threadNum, dataPath);
+	}
+	
+	
 }
