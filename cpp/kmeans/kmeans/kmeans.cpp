@@ -12,7 +12,7 @@
 using namespace std;
 
 
-int randomOverride[] = { 620, 1552, 1115 };//{ 620, 1552, 1115 };
+int randomOverride[] = { 1, 5, 15 };//{ 620, 1552, 1115 };
 
 int LoadData(string dataPath, vector<Point>* points) {
 	string line, word, header;
@@ -56,7 +56,7 @@ static void Kmeans(vector<Cluster>* clusters, vector<Point> points, int dimensio
 	for(int i=0; i<points.size(); i++)
 	{
 		double minDistance = 999999999;
-		Cluster* pointCluster = new Cluster(new Point(new float[] {0}));
+		Cluster* pointCluster = new Cluster();
 		mutex pointCluster_mutex;
 		for(int j=0; j<clusters->size(); j++)
 		{
@@ -77,7 +77,6 @@ static void Kmeans(vector<Cluster>* clusters, vector<Point> points, int dimensio
 void start(int k, int threadNum, string dataPath) {
 	auto start = chrono::high_resolution_clock::now();
 	vector<long long> iterattionTimes;
-	vector<thread> threads;
     vector<Cluster> initialClusters;
     vector<Cluster> clusters;
     vector<Point> points;
@@ -98,6 +97,7 @@ void start(int k, int threadNum, string dataPath) {
 	int l = 0;
 	while (l != k)
 	{
+		vector<thread> threads;
 		auto startI = chrono::high_resolution_clock::now();
 		for (int i = 0; i < clusters.size(); i++)
 			clusters.at(i).ClearPoints();
@@ -128,7 +128,7 @@ void start(int k, int threadNum, string dataPath) {
 int main()
 {
 	const int k = 3;
-	const int threadNum = 3;
-	const string dataPath = "../../../diamonds_numeric.csv";
+	const int threadNum = 2;
+	const string dataPath = "../../../diamond_numeric.csv";
 	start(k, threadNum, dataPath);
 }

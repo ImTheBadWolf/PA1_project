@@ -19,6 +19,11 @@ class Cluster {
 	}
 
 public:
+
+	Cluster() {
+
+	}
+
 	Cluster(Point* centroid) {
 		this->centroid = centroid;
 		this->points = vector<Point>();
